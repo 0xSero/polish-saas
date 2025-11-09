@@ -1,0 +1,286 @@
+version: '3.8'
+
+services:
+  # Shared PostgreSQL database
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: polish_saas
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # Shared Redis instance
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  # App 1: Imieniny Reminder
+  imieniny-reminder-backend:
+    build:
+      context: ./apps/imieniny-reminder/backend
+    ports:
+      - "8001:8000"
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/imieniny_reminder
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ./apps/imieniny-reminder/backend:/app
+
+  imieniny-reminder-frontend:
+    build:
+      context: ./apps/imieniny-reminder/frontend
+    ports:
+      - "3001:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8001
+    volumes:
+      - ./apps/imieniny-reminder/frontend:/app
+      - /app/node_modules
+
+  # App 2: AirAware Polska
+  airaware-backend:
+    build:
+      context: ./apps/airaware-polska/backend
+    ports:
+      - "8002:8000"
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/airaware
+      REDIS_URL: redis://redis:6379/1
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ./apps/airaware-polska/backend:/app
+
+  airaware-frontend:
+    build:
+      context: ./apps/airaware-polska/frontend
+    ports:
+      - "3002:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8002
+    volumes:
+      - ./apps/airaware-polska/frontend:/app
+      - /app/node_modules
+
+  # App 3: PromoPolska
+  promo-polska-backend:
+    build:
+      context: ./apps/promo-polska/backend
+    ports:
+      - "8003:8000"
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/promo_polska
+      REDIS_URL: redis://redis:6379/2
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ./apps/promo-polska/backend:/app
+
+  promo-polska-frontend:
+    build:
+      context: ./apps/promo-polska/frontend
+    ports:
+      - "3003:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8003
+    volumes:
+      - ./apps/promo-polska/frontend:/app
+      - /app/node_modules
+
+  # App 4: CenWatch PL
+  cenwatch-backend:
+    build:
+      context: ./apps/cenwatch-pl/backend
+    ports:
+      - "8004:8000"
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/cenwatch
+      REDIS_URL: redis://redis:6379/3
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ./apps/cenwatch-pl/backend:/app
+
+  cenwatch-frontend:
+    build:
+      context: ./apps/cenwatch-pl/frontend
+    ports:
+      - "3004:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8004
+    volumes:
+      - ./apps/cenwatch-pl/frontend:/app
+      - /app/node_modules
+
+  # App 5: DarmoSwap
+  darmoswap-backend:
+    build:
+      context: ./apps/darmoswap/backend
+    ports:
+      - "8005:8000"
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/darmoswap
+      REDIS_URL: redis://redis:6379/4
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ./apps/darmoswap/backend:/app
+
+  darmoswap-frontend:
+    build:
+      context: ./apps/darmoswap/frontend
+    ports:
+      - "3005:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8005
+    volumes:
+      - ./apps/darmoswap/frontend:/app
+      - /app/node_modules
+
+  # App 6: Działkowiec Planner
+  dzialkowiec-backend:
+    build:
+      context: ./apps/dzialkowiec-planner/backend
+    ports:
+      - "8006:8000"
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/dzialkowiec
+      REDIS_URL: redis://redis:6379/5
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ./apps/dzialkowiec-planner/backend:/app
+
+  dzialkowiec-frontend:
+    build:
+      context: ./apps/dzialkowiec-planner/frontend
+    ports:
+      - "3006:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8006
+    volumes:
+      - ./apps/dzialkowiec-planner/frontend:/app
+      - /app/node_modules
+
+  # App 7: PupilCare
+  pupilcare-backend:
+    build:
+      context: ./apps/pupilcare/backend
+    ports:
+      - "8007:8000"
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/pupilcare
+      REDIS_URL: redis://redis:6379/6
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ./apps/pupilcare/backend:/app
+
+  pupilcare-frontend:
+    build:
+      context: ./apps/pupilcare/frontend
+    ports:
+      - "3007:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8007
+    volumes:
+      - ./apps/pupilcare/frontend:/app
+      - /app/node_modules
+
+  # App 8: Dokumentownik
+  dokumentownik-backend:
+    build:
+      context: ./apps/dokumentownik/backend
+    ports:
+      - "8008:8000"
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/dokumentownik
+      REDIS_URL: redis://redis:6379/7
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ./apps/dokumentownik/backend:/app
+
+  dokumentownik-frontend:
+    build:
+      context: ./apps/dokumentownik/frontend
+    ports:
+      - "3008:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8008
+    volumes:
+      - ./apps/dokumentownik/frontend:/app
+      - /app/node_modules
+
+  # App 9: EventRadar Polska
+  eventradar-backend:
+    build:
+      context: ./apps/eventradar-polska/backend
+    ports:
+      - "8009:8000"
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/eventradar
+      REDIS_URL: redis://redis:6379/8
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ./apps/eventradar-polska/backend:/app
+
+  eventradar-frontend:
+    build:
+      context: ./apps/eventradar-polska/frontend
+    ports:
+      - "3009:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8009
+    volumes:
+      - ./apps/eventradar-polska/frontend:/app
+      - /app/node_modules
+
+  # App 10: PolishWriter
+  polishwriter-backend:
+    build:
+      context: ./apps/polishwriter/backend
+    ports:
+      - "8010:8000"
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/polishwriter
+      REDIS_URL: redis://redis:6379/9
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ./apps/polishwriter/backend:/app
+
+  polishwriter-frontend:
+    build:
+      context: ./apps/polishwriter/frontend
+    ports:
+      - "3010:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8010
+    volumes:
+      - ./apps/polishwriter/frontend:/app
+      - /app/node_modules
+
+volumes:
+  postgres_data:
+  redis_data:
