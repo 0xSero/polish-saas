@@ -12,3 +12,5 @@ httpx==0.26.0
 redis==5.0.1
 celery==5.3.6
 python-decouple==3.8
+
+stripe==7.9.0
